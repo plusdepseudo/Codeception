@@ -409,12 +409,13 @@ EOF;
         $data = $this->em->getClassMetadata($assoc);
         foreach ($params as $key => $val) {
             if (isset($data->associationMappings)) {
-                if ($map = array_key_exists($key, $data->associationMappings)) {
+                if (array_key_exists($key, $data->associationMappings)) {
+                    $map = $data->associationMappings[$key];
                     if (is_array($val)) {
                         $qb->innerJoin("$alias.$key", $key);
                         foreach ($val as $column => $v) {
                             if (is_array($v)) {
-                                $this->buildAssociationQuery($qb, $map['targetEntity'], $column, $v);
+                                $this->buildAssociationQuery($qb, $map['targetEntity'], $key, $val);
                                 continue;
                             }
                             $paramname = $key . '__' . $column;
